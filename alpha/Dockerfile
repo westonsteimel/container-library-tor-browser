@@ -5,10 +5,10 @@
 #	-v /dev/shm:/dev/shm \
 #	-v /etc/machine-id:/etc/machine-id:ro \
 #	-e DISPLAY=unix$DISPLAY \
-#	jess/tor-browser:alpha
+#	westonsteimel/tor-browser:alpha
 #
 FROM westonsteimel/debian:sid-slim
-LABEL maintainer "Jessie Frazelle <jess@linux.com>"
+LABEL maintainer "Weston Steimel <weston.steimel@gmail.com>"
 
 RUN apt-get update && apt-get install -y \
 	ca-certificates \
@@ -34,7 +34,7 @@ RUN useradd --create-home --home-dir $HOME user \
 ENV LANG C.UTF-8
 
 # https://www.torproject.org/projects/torbrowser.html.en
-ENV TOR_VERSION 8.5a10
+ENV TOR_VERSION 8.5a11
 ENV TOR_FINGERPRINT 0x4E2C6E8793298290
 
 # download tor and check signature

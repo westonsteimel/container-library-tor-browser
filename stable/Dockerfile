@@ -5,10 +5,9 @@
 #	-v /dev/shm:/dev/shm \
 #	-v /etc/machine-id:/etc/machine-id:ro \
 #	-e DISPLAY=unix$DISPLAY \
-#	jess/tor-browser
+#	westonsteimel/tor-browser:stable
 #
-FROM debian:buster-slim
-LABEL maintainer "Jessie Frazelle <jess@linux.com>"
+FROM westonsteimel:debian:sid-slim
 
 RUN apt-get update && apt-get install -y \
 	ca-certificates \
@@ -34,7 +33,7 @@ RUN useradd --create-home --home-dir $HOME user \
 ENV LANG C.UTF-8
 
 # https://www.torproject.org/projects/torbrowser.html.en
-ENV TOR_VERSION 8.0.9
+ENV TOR_VERSION 8.5.1
 ENV TOR_FINGERPRINT 0x4E2C6E8793298290
 
 # download tor and check signature

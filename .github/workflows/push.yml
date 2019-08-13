@@ -1,0 +1,54 @@
+on: push
+name: Build and Push Dockerfiles
+jobs:
+  build_stable:
+    name: Build stable
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Login DockerHub
+      uses: actions/docker/login@master
+      env:
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+    - name: Build tor-browser stable
+      uses: actions/docker/cli@master
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      with:
+        args: build -t "${DOCKER_USERNAME}/tor-browser:stable" -t "${DOCKER_USERNAME}/tor-browser:latest" stable
+    - name: Push tor-browser stable to DockerHub
+      uses: actions/docker/cli@master
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      with:
+        args: push "${DOCKER_USERNAME}/tor-browser:stable"
+    - name: Push tor-browser latest to DockerHub
+      uses: actions/docker/cli@master
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      with:
+        args: push "${DOCKER_USERNAME}/tor-browser:latest"
+  build_alpha:
+    name: Build alpha
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Login DockerHub
+      uses: actions/docker/login@master
+      env:
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+    - name: Build tor-browser alpha
+      uses: actions/docker/cli@master
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      with:
+          args: build -t "${DOCKER_USERNAME}/tor-browser:alpha" alpha
+    - name: Push tor-browser alpha to DockerHub
+      uses: actions/docker/cli@master
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      with:
+          args: push "${DOCKER_USERNAME}/tor-browser:alpha"
+

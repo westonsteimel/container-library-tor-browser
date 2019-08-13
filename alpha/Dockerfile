@@ -7,7 +7,7 @@
 #	-e DISPLAY=unix$DISPLAY \
 #	westonsteimel/tor-browser:alpha
 #
-FROM westonsteimel/debian:sid-slim
+FROM debian:sid-slim
 
 RUN apt-get update && apt-get install -y \
 	ca-certificates \

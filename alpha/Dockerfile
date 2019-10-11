@@ -73,5 +73,5 @@ LABEL org.opencontainers.image.title="Tor Browser Alpha" \
     org.opencontainers.image.description="Tor Browser Alpha in Docker" \
     org.opencontainers.image.url="https://github.com/westonsteimel/docker-tor-browser" \
     org.opencontainers.image.source="https://github.com/westonsteimel/docker-tor-browser" \
-    org.opencontainers.image.version="${TOR_BROWSER_VERSION}"
-
+    org.opencontainers.image.version="${TOR_BROWSER_VERSION}" \
+    version="${TOR_BROWSER_VERSION}"

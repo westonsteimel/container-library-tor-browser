@@ -1,4 +1,6 @@
-on: [push]
+on:
+  schedule:
+  - cron: '0 1 * * *'
 name: Build and deploy on push
 jobs:
   dockerhub_publish_stable:

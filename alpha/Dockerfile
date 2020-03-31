@@ -8,7 +8,7 @@
 #	westonsteimel/tor-browser:alpha
 #
 
-ARG TOR_BROWSER_VERSION="9.5a5"
+ARG TOR_BROWSER_VERSION="9.5a9"
 
 FROM debian:sid-slim
 

@@ -7,7 +7,7 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Build and Publish stable to DockerHub
-      uses: westonsteimel/action-docker-publish@master
+      uses: westonsteimel/action-docker-publish@main
       with:
         registry: 'docker.io'
         password: ${{ secrets.DOCKER_PASSWORD }}
@@ -27,7 +27,7 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Build and Publish alpha to DockerHub
-      uses: westonsteimel/action-docker-publish@master
+      uses: westonsteimel/action-docker-publish@main
       with:
         registry: 'docker.io'
         password: ${{ secrets.DOCKER_PASSWORD }}

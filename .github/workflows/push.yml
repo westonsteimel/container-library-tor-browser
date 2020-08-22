@@ -5,7 +5,7 @@ jobs:
     name: DockerHub Build and Publish stable
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@main
     - name: Build and Publish stable to DockerHub
       uses: westonsteimel/action-docker-publish@main
       with:
@@ -25,7 +25,7 @@ jobs:
     name: DockerHub Build and Publish alpha
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@main
     - name: Build and Publish alpha to DockerHub
       uses: westonsteimel/action-docker-publish@main
       with:

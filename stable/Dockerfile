@@ -8,7 +8,7 @@
 #	westonsteimel/tor-browser:stable
 #
 
-ARG TOR_BROWSER_VERSION="10.0.1"
+ARG TOR_BROWSER_VERSION="10.0.4"
 
 FROM debian:sid-slim
 

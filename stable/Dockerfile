@@ -8,11 +8,17 @@
 #	westonsteimel/tor-browser:stable
 #
 
-ARG TOR_BROWSER_VERSION="10.0.4"
+ARG SOURCE
+ARG REVISION
+ARG CREATED
+ARG VERSION
 
 FROM debian:sid-slim
 
-ARG TOR_BROWSER_VERSION
+ARG SOURCE
+ARG REVISION
+ARG CREATED
+ARG VERSION
 
 RUN apt-get update && apt-get install -y \
 	ca-certificates \
@@ -38,7 +44,7 @@ RUN useradd --create-home --home-dir $HOME user \
 ENV LANG C.UTF-8
 
 # https://www.torproject.org/projects/torbrowser.html.en
-ENV TOR_BROWNSER_VERSION "${TOR_BROWSER_VERSION}"
+ENV TOR_BROWNSER_VERSION "${VERSION}"
 ENV TOR_FINGERPRINT 0x4E2C6E8793298290
 
 # download tor and check signature
@@ -71,7 +77,7 @@ CMD [ "/usr/local/bin/Browser/start-tor-browser", "--log", "/dev/stdout" ]
 
 LABEL org.opencontainers.image.title="Tor Browser" \
     org.opencontainers.image.description="Tor Browser in Docker" \
-    org.opencontainers.image.url="https://github.com/westonsteimel/docker-tor-browser" \
-    org.opencontainers.image.source="https://github.com/westonsteimel/docker-tor-browser" \
-    org.opencontainers.image.version="${TOR_BROWSER_VERSION}" \
-    version="${TOR_BROWSER_VERSION}"
+    org.opencontainers.image.source="${SOURCE}" \
+    org.opencontainers.image.revision="${REVISION}" \
+    org.opencontainers.image.created="${CREATED}" \
+    org.opencontainers.image.version="${VERSION}"

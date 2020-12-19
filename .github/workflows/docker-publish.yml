@@ -1,0 +1,56 @@
+on: 
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 1 * * *'
+name: Build and publish to DockerHub
+env:
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  DOCKER_REGISTRY: 'docker.io'
+  DOCKER_REPOSITORY: 'tor-browser'
+jobs:
+  stable:
+    name: stable
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@main
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - 
+        name: Build and Publish to DockerHub
+        run: |
+          export DOCKER_BUILD_CONTEXT="stable" 
+          export DOCKER_IMAGE_VERSION=`curl -L -s "https://dist.torproject.org/torbrowser/?C=M;O=D" | pcregrep -o1 -e "<a href=\"([0-9.]*)\/\">" | head -n 1`
+          export DOCKER_IMAGE_VERSION="stable"
+          export DOCKER_TAGS="stable,latest,${DOCKER_IMAGE_VERSION}"
+          ./scripts/publish.sh
+
+  alpha:
+    name: alpha
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@main
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Build and Publish to DockerHub
+        run: |
+          export DOCKER_BUILD_CONTEXT="alpha"
+          export DOCKER_IMAGE_VERSION=`curl -L -s "https://dist.torproject.org/torbrowser/?C=M;O=D" | pcregrep -o1 -e "<a href=\"([0-9.a]*)\/\">" | head -n 1`
+          export DOCKER_TAGS="alpha,${DOCKER_IMAGE_VERSION}"
+          ./scripts/publish.sh
+

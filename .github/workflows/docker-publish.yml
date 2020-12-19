@@ -27,8 +27,9 @@ jobs:
       - 
         name: Build and Publish to DockerHub
         run: |
+          sudo apt-get install -y pcregrep
           export DOCKER_BUILD_CONTEXT="stable" 
-          export DOCKER_IMAGE_VERSION=`curl -L -s "https://dist.torproject.org/torbrowser/?C=M;O=D" | pcregrep -o1 -e "<a href=\"([0-9.]*)\/\">" | head -n 1`
+          export DOCKER_IMAGE_VERSION=`curl -L -s "https://dist.torproject.org/torbrowser/?C=M;O=D" | pcregrep -o1 -e "<a href=\"([0-9.]+)\/\">" | head -n 1`
           export DOCKER_IMAGE_VERSION="stable"
           export DOCKER_TAGS="stable,latest,${DOCKER_IMAGE_VERSION}"
           ./scripts/publish.sh
@@ -49,8 +50,9 @@ jobs:
       -
         name: Build and Publish to DockerHub
         run: |
+          sudo apt-get install -y pcregrep
           export DOCKER_BUILD_CONTEXT="alpha"
-          export DOCKER_IMAGE_VERSION=`curl -L -s "https://dist.torproject.org/torbrowser/?C=M;O=D" | pcregrep -o1 -e "<a href=\"([0-9.a]*)\/\">" | head -n 1`
+          export DOCKER_IMAGE_VERSION=`curl -L -s "https://dist.torproject.org/torbrowser/?C=M;O=D" | pcregrep -o1 -e "<a href=\"([0-9.a]+)\/\">" | head -n 1`
           export DOCKER_TAGS="alpha,${DOCKER_IMAGE_VERSION}"
           ./scripts/publish.sh
 

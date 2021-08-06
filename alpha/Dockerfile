@@ -8,17 +8,13 @@
 #	westonsteimel/tor-browser:alpha
 #
 
-ARG SOURCE
-ARG REVISION
-ARG CREATED
-ARG VERSION
+ARG VERSION="11.0a2"
+ARG TOR_BROWSER_LANGUAGE="en-US"
 
 FROM debian:sid-slim
 
-ARG SOURCE
-ARG REVISION
-ARG CREATED
 ARG VERSION
+ARG TOR_BROWSER_LANGUAGE
 
 RUN apt-get update && apt-get install -y \
 	ca-certificates \
@@ -44,13 +40,14 @@ RUN useradd --create-home --home-dir $HOME user \
 ENV LANG C.UTF-8
 
 # https://www.torproject.org/projects/torbrowser.html.en
-ENV TOR_BROWSER_VERSION "${VERSION}"
-ENV TOR_FINGERPRINT 0x4E2C6E8793298290
+ENV TOR_BROWSER_VERSION="${VERSION}"
+ENV TOR_FINGERPRINT="0x4E2C6E8793298290"
+ENV TOR_BROWSER_LANGUAGE="${TOR_BROWSER_LANGUAGE}"
 
 # download tor and check signature
 RUN cd /tmp \
-	&& curl -sSOL "https://dist.torproject.org/torbrowser/${TOR_BROWSER_VERSION}/tor-browser-linux64-${TOR_BROWSER_VERSION}_en-US.tar.xz" \
-	&& curl -sSOL "https://dist.torproject.org/torbrowser/${TOR_BROWSER_VERSION}/tor-browser-linux64-${TOR_BROWSER_VERSION}_en-US.tar.xz.asc" \
+	&& curl -sSOL "https://dist.torproject.org/torbrowser/${TOR_BROWSER_VERSION}/tor-browser-linux64-${TOR_BROWSER_VERSION}_${TOR_BROWSER_LANGUAGE}.tar.xz" \
+	&& curl -sSOL "https://dist.torproject.org/torbrowser/${TOR_BROWSER_VERSION}/tor-browser-linux64-${TOR_BROWSER_VERSION}_${TOR_BROWSER_LANGUAGE}.tar.xz.asc" \
 	&& export GNUPGHOME="$(mktemp -d)" \
 	&& for server in $(shuf -e \
 			ha.pool.sks-keyservers.net \
@@ -62,7 +59,7 @@ RUN cd /tmp \
 	done \
 	&& gpg --fingerprint --keyid-format LONG ${TOR_FINGERPRINT} | grep "Key fingerprint = EF6E 286D DA85 EA2A 4BA7  DE68 4E2C 6E87 9329 8290" \
 	&& gpg --verify tor-browser-linux64-${TOR_BROWSER_VERSION}_en-US.tar.xz.asc \
-	&& tar -vxJ --strip-components 1 -C /usr/local/bin -f tor-browser-linux64-${TOR_BROWSER_VERSION}_en-US.tar.xz \
+	&& tar -vxJ --strip-components 1 -C /usr/local/bin -f tor-browser-linux64-${TOR_BROWSER_VERSION}_${TOR_BROWSER_LANGUAGE}.tar.xz \
 	&& rm -rf tor-browser* "$GNUPGHOME" \
 	&& chown -R user:user /usr/local/bin
 
@@ -77,9 +74,5 @@ CMD [ "/usr/local/bin/Browser/start-tor-browser", "--log", "/dev/stdout" ]
 
 LABEL org.opencontainers.image.title="Tor Browser Alpha" \
     org.opencontainers.image.description="Tor Browser Alpha in Docker" \
-    org.opencontainers.image.url="https://github.com/westonsteimel/docker-tor-browser" \
-    org.opencontainers.image.source="${SOURCE}" \
-    org.opencontainers.image.revision="${REVISION}" \
-    org.opencontainers.image.created="${CREATED}" \
     org.opencontainers.image.version="${VERSION}"
 

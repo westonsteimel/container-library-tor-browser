@@ -1,4 +1,5 @@
-on: 
+on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -8,8 +9,9 @@ name: Build and publish to DockerHub
 env:
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  DOCKER_REGISTRY: 'docker.io'
-  DOCKER_REPOSITORY: 'tor-browser'
+  GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+  QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+  QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
 jobs:
   stable:
     name: stable
@@ -25,13 +27,17 @@ jobs:
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - 
-        name: Build and Publish to DockerHub
+        name: Build and Publish images
         run: |
           sudo apt-get install -y pcregrep
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          ./scripts/update-stable.sh
           export DOCKER_BUILD_CONTEXT="stable"
-          export DOCKER_IMAGE_VERSION=`curl -L -s "https://www.torproject.org/download/" | pcregrep -o1 -e "href=\"\/dist\/torbrowser\/(.*)/tor-browser-linux64-.*_en-US.tar.xz\">Download for Linux<\/a>"`
+          export DOCKER_IMAGE_VERSION=`sed -ne "s/^ARG VERSION=['\"]\([^'\"]*\)['\"]/\1/p" stable/Dockerfile`
           export DOCKER_TAGS="stable,latest,${DOCKER_IMAGE_VERSION}"
           ./scripts/publish.sh
+          git push
 
   alpha:
     name: alpha
@@ -47,11 +53,15 @@ jobs:
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       -
-        name: Build and Publish to DockerHub
+        name: Build and Publish images
         run: |
           sudo apt-get install -y pcregrep
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          ./scripts/update-alpha.sh
           export DOCKER_BUILD_CONTEXT="alpha"
-          export DOCKER_IMAGE_VERSION=`curl -L -s "https://www.torproject.org/download/alpha/" | pcregrep -o1 -e "\/ <a href=\"\/dist\/torbrowser\/(.*)\/tor-browser-linux64-.*_en-US.tar.xz\">64-bit<\/a>"`
-          export DOCKER_TAGS="alpha,edge,${DOCKER_IMAGE_VERSION}"
+          export DOCKER_IMAGE_VERSION=`sed -ne "s/^ARG VERSION=['\"]\([^'\"]*\)['\"]/\1/p" alpha/Dockerfile`
+          export DOCKER_TAGS="edge,alpha,${DOCKER_IMAGE_VERSION}"
           ./scripts/publish.sh
+          git push
 

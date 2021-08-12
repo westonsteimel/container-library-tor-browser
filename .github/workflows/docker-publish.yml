@@ -4,16 +4,32 @@ on:
     branches:
       - main
   schedule:
-    - cron: '0 1 * * *'
+    - cron: '0 1 * * SAT'
 name: Build and publish to DockerHub
 env:
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+  GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
   QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
 jobs:
+  update:
+    name: update
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@main
+      - 
+        name: Update Dockerfiles
+        run: |
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git config user.name "github-actions[bot]"
+            sudo apt-get install -y pcregrep
+            ./scripts/update.sh
+            git push
   stable:
+    needs: update
     name: stable
     runs-on: ubuntu-latest
     steps:
@@ -29,17 +45,13 @@ jobs:
       - 
         name: Build and Publish images
         run: |
-          sudo apt-get install -y pcregrep
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git config user.name "github-actions[bot]"
-          ./scripts/update-stable.sh
           export DOCKER_BUILD_CONTEXT="stable"
           export DOCKER_IMAGE_VERSION=`sed -ne "s/^ARG VERSION=['\"]\([^'\"]*\)['\"]/\1/p" stable/Dockerfile`
           export DOCKER_TAGS="stable,latest,${DOCKER_IMAGE_VERSION}"
           ./scripts/publish.sh
-          git push
 
   alpha:
+    needs: update
     name: alpha
     runs-on: ubuntu-latest
     steps:
@@ -55,13 +67,8 @@ jobs:
       -
         name: Build and Publish images
         run: |
-          sudo apt-get install -y pcregrep
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git config user.name "github-actions[bot]"
-          ./scripts/update-alpha.sh
           export DOCKER_BUILD_CONTEXT="alpha"
           export DOCKER_IMAGE_VERSION=`sed -ne "s/^ARG VERSION=['\"]\([^'\"]*\)['\"]/\1/p" alpha/Dockerfile`
           export DOCKER_TAGS="edge,alpha,${DOCKER_IMAGE_VERSION}"
           ./scripts/publish.sh
-          git push
 

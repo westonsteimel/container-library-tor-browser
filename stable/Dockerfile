@@ -8,7 +8,7 @@
 #	westonsteimel/tor-browser:alpha
 #
 
-ARG VERSION="10.5.4"
+ARG VERSION="10.5.5"
 ARG TOR_BROWSER_LANGUAGE="en-US"
 
 FROM debian:sid-slim

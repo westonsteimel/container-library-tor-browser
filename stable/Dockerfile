@@ -30,7 +30,8 @@ RUN apt-get update && apt-get install -y \
 	libx11-xcb1 \
 	libxt6 \
 	xz-utils \
-	--no-install-recommends \
+	file \
+    --no-install-recommends \
 	&& rm -rf /var/lib/apt/lists/*
 
 ENV HOME /home/user

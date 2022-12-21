@@ -36,9 +36,9 @@ RUN apt-get update && apt-get install -y \
     --no-install-recommends \
 	&& rm -rf /var/lib/apt/lists/*
 
-ENV HOME /home/user
-RUN useradd --create-home --home-dir $HOME user \
-	&& chown -R user:user $HOME
+ENV HOME /home/tor
+RUN useradd --create-home --home-dir $HOME tor \
+	&& chown -R tor:tor $HOME
 
 ENV LANG C.UTF-8
 
@@ -64,13 +64,15 @@ RUN cd /tmp \
 	&& gpg --verify tor-browser-linux64-${TOR_BROWSER_VERSION}_${TOR_BROWSER_LANGUAGE}.tar.xz.asc \
 	&& tar -vxJ --strip-components 1 -C /usr/local/bin -f tor-browser-linux64-${TOR_BROWSER_VERSION}_${TOR_BROWSER_LANGUAGE}.tar.xz \
 	&& rm -rf tor-browser* "$GNUPGHOME" \
-	&& chown -R user:user /usr/local/bin
+	&& chmod -R 777 /usr/local/bin/Browser/ \
+    && chown -R tor:tor /usr/local/bin/Browser/
+ 
 
 # good fonts
 COPY local.conf /etc/fonts/local.conf
 
 WORKDIR $HOME
-USER user
+USER tor
 
 ENTRYPOINT ["/bin/bash"]
 CMD [ "/usr/local/bin/Browser/start-tor-browser", "--log", "/dev/stdout" ]

@@ -29,6 +29,8 @@ RUN apt-get update && apt-get install -y \
 	libx11-xcb-dev \
 	libx11-xcb1 \
 	libxt6 \
+    libpci-dev \
+    libegl-dev \
 	xz-utils \
 	file \
     --no-install-recommends \

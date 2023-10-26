@@ -25,7 +25,7 @@ jobs:
         run: |
             git config user.email "github-actions[bot]@users.noreply.github.com"
             git config user.name "github-actions[bot]"
-            sudo apt-get install -y pcregrep
+            sudo DEBIAN_FRONTEND=noninteractive apt-get install -y pcregrep
             ./scripts/update.sh
             git push
   stable:

@@ -49,8 +49,9 @@ ENV TOR_BROWSER_LANGUAGE="${TOR_BROWSER_LANGUAGE}"
 
 # download tor and check signature
 RUN cd /tmp \
-	&& curl -sSOL "https://dist.torproject.org/torbrowser/${TOR_BROWSER_VERSION}/tor-browser-linux64-${TOR_BROWSER_VERSION}_${TOR_BROWSER_LANGUAGE}.tar.xz" \
-	&& curl -sSOL "https://dist.torproject.org/torbrowser/${TOR_BROWSER_VERSION}/tor-browser-linux64-${TOR_BROWSER_VERSION}_${TOR_BROWSER_LANGUAGE}.tar.xz.asc" \
+    && arch=$(arch) \
+	&& curl -sSOL "https://dist.torproject.org/torbrowser/${TOR_BROWSER_VERSION}/tor-browser-linux-${arch}-${TOR_BROWSER_VERSION}.tar.xz" \
+	&& curl -sSOL "https://dist.torproject.org/torbrowser/${TOR_BROWSER_VERSION}/tor-browser-linux-${arch}-${TOR_BROWSER_VERSION}.tar.xz.asc" \
 	&& export GNUPGHOME="$(mktemp -d)" \
 	&& for server in $(shuf -e \
 			ha.pool.sks-keyservers.net \
@@ -61,8 +62,8 @@ RUN cd /tmp \
 		gpg --no-tty --keyserver "${server}" --recv-keys ${TOR_FINGERPRINT} && break || : ; \
 	done \
 	&& gpg --fingerprint --keyid-format LONG ${TOR_FINGERPRINT} | grep "Key fingerprint = EF6E 286D DA85 EA2A 4BA7  DE68 4E2C 6E87 9329 8290" \
-	&& gpg --verify tor-browser-linux64-${TOR_BROWSER_VERSION}_${TOR_BROWSER_LANGUAGE}.tar.xz.asc \
-	&& tar -vxJ --strip-components 1 -C /usr/local/bin -f tor-browser-linux64-${TOR_BROWSER_VERSION}_${TOR_BROWSER_LANGUAGE}.tar.xz \
+	&& gpg --verify tor-browser-linux-${arch}-${TOR_BROWSER_VERSION}.tar.xz.asc \
+	&& tar -vxJ --strip-components 1 -C /usr/local/bin -f tor-browser-linux-${arch}-${TOR_BROWSER_VERSION}.tar.xz \
 	&& rm -rf tor-browser* "$GNUPGHOME" \
 	&& chmod -R 777 /usr/local/bin/Browser/ \
     && chown -R tor:tor /usr/local/bin/Browser/

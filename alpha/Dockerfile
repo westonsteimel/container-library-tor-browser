@@ -8,7 +8,7 @@
 #	westonsteimel/tor-browser:alpha
 #
 
-ARG VERSION="14.0a1"
+ARG VERSION="14.0a2"
 ARG TOR_BROWSER_LANGUAGE="ALL"
 
 FROM debian:stable-slim
